@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.math.BigInteger;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.Random;
 import java.util.SortedMap;
 
@@ -186,12 +187,14 @@ public class FileUtils {
 		destenation.write(data, start, w * packetSize);
 	}
 
-	public static FileOutputStream[] createParts(String filePath,
+	public static Object[] createParts(String filePath,
 			String suffix, int numParts) {
 		FileOutputStream[] result = new FileOutputStream[numParts];
+		ArrayList<String> key= new ArrayList<String>();
 		for (int i = 0; i < numParts; i++) {
 			String partName = generatePartPath(filePath, suffix, i+1);
 			File part = new File(partName);
+			key.add(partName);
 			try {
 				if (part.exists()) {
 					part.delete();
@@ -207,7 +210,8 @@ public class FileUtils {
 				throw new RuntimeException("an error occured!");
 			}
 		}
-		return result;
+		Object [] Resultat = {result,key};
+		return Resultat;
 	}
 
 	public static void close(FileOutputStream[] parts) {
